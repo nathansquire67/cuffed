@@ -1,0 +1,339 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+
+    <title>
+        cuffed
+    </title>
+
+
+
+
+    <link href="https://fonts.googleapis.com/css?family=Damion|Parisienne&display=swap" rel="stylesheet">
+
+    <style>
+      body {
+        background-color: #390A12;
+        -webkit-user-select: none; /* Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* IE10+/Edge */
+        user-select: none; /* Standard */
+
+        font-family: sans-serif;
+        color: white;
+        font-size: 1.4em;
+      }
+      a.card, a.cardflipped, a.flipButton {
+        background-color: #6f0320;
+        height: 325px;
+        width: 270px;
+        border-radius: 8px;
+        display: inline-block;
+        padding: 0px 20px;
+        margin: 0px 5px;
+        position: relative;
+        border: 5px solid #7C0324;
+        box-shadow: 5px 5px 10px rgba(0,0,0,0.8);
+        /*overflow: hidden;
+        white-space: nowrap;*/
+      }
+      a.card p, a.cardflipped p{
+        display: flex;
+        text-align: left;
+        color: #F2059F80;
+      }
+
+      a.card h1, a.cardflipped h1, a.flipButton h1{
+        font-size: 1.3em;
+        margin: 0px;
+        text-align: left;
+        color: #ffffffaa;
+      }
+      div.board a.cardflipped h1, div.board a.cardflipped p{
+        color: rgba(0, 0, 0, 0);
+      }
+
+      div.board {
+        margin: 0px;
+        width: 100%;
+        max-width: 680px;
+        padding: 10px;
+        background-color: rgba(0,0,0,0);
+        display: block;
+      }
+      a.flipButton h1{
+        margin: 20px 0px;
+        text-align: center;
+        color: #ffffff8c;
+      }
+      a.flipButton{
+        width: 174px;
+        height: 73px;
+        background-color: #F2059F80;
+        color: white;
+        border-width: 0px;
+        top: -150px;
+        left: 224px;
+        position: relative;
+        border-radius: 55px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+      }
+      a.rules{
+        width: 624px;
+        min-height: 100px;
+        display: inline-block;
+        padding: 0px;
+        margin: 0px 5px;
+        position: relative;
+        color: #F2059F80;
+      }
+      a.rules h1{
+        font-size: 1.2em;
+      }
+
+      a.title{
+        margin: 0px;
+        width: 624px;
+        height: 70px;
+        top: 0px;
+        position: relative;
+        background-color: none;
+        color: #F2059F;
+      }
+
+      a.title h1{
+        margin: 0px;
+        font-size: 4.5em;
+        font-weight: 100;
+        text-align: center;
+        font-family: 'Damion';
+      }
+
+      a.hidden {
+        display: none;
+      }
+
+      #discard{
+        position: absolute;
+        z-index: 1;
+        top: 200px;
+        left: 150px;
+        height: 550px;
+        width: 400px;
+        /*border: 2px solid #F20544;*/
+        border-width: 10px;
+        box-shadow: 2px 2px 15px #00000094;
+        transform: rotate(3deg);
+        font-size: 1.5em;
+      }
+
+      a.power{
+        background-color: #590219;
+        border-color: #63011C;
+      }
+
+
+    </style>
+
+    <script>
+
+      var cuffed = "<h1>cuffed</h1><p>your partner cannot play a power card for two turns</p>";
+      var gameOn = "<h1>game on</h1><p>choose a random task card from your partners deck, they have to do it, you claim the points</p>";
+      var breatheEasy = "<h1>breathe easy</h1><p>discard any two of your task cards</p>";
+      var deepBreath = "<h1>deep breath</h1><p>discard any one task card</p>";
+      var doubleBarrel = "<h1>double barrel</h1><p>play any two power cards at once</p>";
+      var guardianAngel = "<h1>gaurdian angel</h1><p>if your partner plays a cut purse or sabotage card while you have this one, it has no effect</p>";
+      var cutPurse = "<h1>cut purse</h1><p>your partner has to discard their lowest two task cards</p>";
+      var sabotage = "<h1>sabotage</h1><p>you can discard your one highest task card and your partner must discard their one lowest</p>";
+      var gameOnYou = "<h1>game on you</h1><p>if your partner plays a game on card while you have this one, its game game on for both of you</p>";
+      var upgrade = "<h1>upgrade</h1><p>you can play any other power card with this one, and increase by one any number written on that card</p>";
+
+      var strip1 = "<h1>1 point</h1><p>let your partner strip you of one piece of clothes</p>";
+      var strip2 = "<h1>2 points</h1><p>let your partner strip you from the waist up</p>";
+      var strip3 = "<h1>3 points</h1><p>let your partner strip you of two pieces of clothes</p>";
+      var strip4 = "<h1>4 points</h1><p>let your partner strip you to your undies</p>";
+      var strip5 = "<h1>5 points</h1><p>swap undies with your partner, strip everything else</p>";
+      var strip6 = "<h1>6 points</h1><p>let your partner strip you completely</p>";
+      var vibe4 = "<h1>4 points</h1><p>put a vibe down your undies, turn it on and leave it there</p>";
+      var vibe5 = "<h1>5 points</h1><p>put a vibe down your undies, turn it on and go for a stroll</p>";
+      var vibe6 = "<h1>6 points</h1><p>let your partner tease you with a vibe for thirty seconds, in your current state of clothing</p>";
+      var vibe7 = "<h1>7 points</h1><p>let your partner strip you and tease you with a vibe for thirty seconds</p>";
+      var kiss1 = "<h1>1 point</h1><p>nibble your partner's ear</p>";
+      var kiss2 = "<h1>2 points</h1><p>suck your partner's nipples</p>";
+      var kiss3 = "<h1>3 points</h1><p>kiss your partner in five places</p>";
+      var kiss4 = "<h1>4 points</h1><p>kiss your partner on the inner thigh</p>";
+      var kiss5 = "<h1>5 points</h1><p>kiss your partner down there</p>";
+      var kiss6 = "<h1>6 points</h1><p>tease your partner down there, using your tongue, for ten seconds</p>";
+      var lick4 = "<h1>4 points</h1><p>draw letters on your partners's tummy, with your tongue, until they can guess the letter</p>";
+      var sniff4 = "<h1>4 points</h1><p>cover your eyes while your partner puts some perfume on one part of their body, find it using your nose</p>";
+      var feel6 = "<h1>6 points</h1><p>have your partner strip to their undies and put a piece of tape somewhere on their body, you must find it blindfolded</p>";
+      var hump3 = "<h1>4 points</h1><p>let your partner hump you doggy style, in your current states of clothing</p>";
+      var hump4 = "<h1>4 points</h1><p>let your partner hump you missionary style, in your current states of clothing</p>";
+      var sit4 = "<h1>4 points</h1><p>let your partner sit on your face, in your current states of clothing</p>";
+      var teeth3 = "<h1>4 points</h1><p>remove a piece of your partner's clothes, using your teeth</p>";
+      var touch3 = "<h1>3 points</h1><p>touch your partner from their scalp to their toes</p>";
+      var touch5 = "<h1>5 points</h1><p>tease your partner down there for ten seconds, using your hands</p>";
+      var lapdance4 = "<h1>4 points</h1><p>give your partner a lap dance to a song of their choice</p>";
+      var lapdance6 = "<h1>6 points</h1><p>give your partner a nude lap dance to a song of their choice</p>";
+      var draw6 = "<h1>6 points</h1><p>let your partner draw your privates, blindfolded, using only touch</p>";
+
+      var cards = [cuffed, cuffed, gameOn, gameOn, breatheEasy, breatheEasy, deepBreath, deepBreath, doubleBarrel, cutPurse, cutPurse, cutPurse,
+        sabotage, sabotage, gameOnYou, upgrade, guardianAngel,
+        strip1, strip2, strip2, strip3, strip4, strip4, strip4, strip5, strip5, strip5, strip6, vibe4, vibe4, vibe4, vibe5, vibe6, vibe7,
+        kiss1, kiss2, kiss3, kiss3, kiss4, kiss4, kiss5, kiss6, lick4, sniff4, hump4, hump4, hump3, sit4, feel6,
+        touch3, touch5, lapdance4, lapdance4, lapdance6, draw6];
+
+      function playSound(){
+        var sound = document.getElementById('sound');
+        sound.volume = 0.4;
+        sound.play();
+
+      }
+
+      function playBigSound(){
+        var bigSound = document.getElementById('bigSound');
+        bigSound.play();
+      }
+
+      function cardClick(cardId){
+
+        clickedCard = document.getElementById(cardId);
+        if(clickedCard.innerHTML.includes('5') || clickedCard.innerHTML.includes('6') || clickedCard.innerHTML.includes('7')){
+          playBigSound();
+        }else{
+          playSound();
+        }
+
+        var discard = document.getElementById('discard');
+        if(discard.className.includes("hidden")){
+          discard.className = "card";
+          writeToDiscard(cardId);
+          cardWrite(cardId);
+        }else{
+
+        }
+
+      }
+
+      function cardWrite(cardId){
+        var card = document.getElementById(cardId);
+        card.innerHTML = '<p>' + cards[Math.floor(Math.random() * cards.length)] + '</p>';
+        empower(card);
+      }
+
+      function refreshCards(){
+        cardWrite("card1");cardWrite("card2");cardWrite("card3");cardWrite("card4");cardWrite("card5");cardWrite("card6");
+        flip();
+        flip();
+      }
+
+      window.onload = function() {
+       refreshCards();
+      }
+
+      function flip(){
+        playSound();
+        for (var i = 1; i<7; i++){
+          var thiscard = document.getElementById('card' + i);
+          if (thiscard.className == "card" || thiscard.className == "card power"){
+            thiscard.className = "cardflipped";
+          } else {
+            thiscard.className = "card";
+          }
+          empower(thiscard);
+        }
+      }
+
+      function empower(thiscard){
+        ///if the card does say point or points in the title
+        if(!(thiscard.innerHTML.includes('points</h1>') || thiscard.innerHTML.includes('point</h1>'))){
+          if(thiscard.className == "card" || thiscard.className == "cardflipped"){
+            thiscard.className += " power";
+          }
+        }else if(thiscard.className == "card power"){
+          thiscard.className = "card";
+        }else if(thiscard.className == "card"){
+        }else{
+          console.log(thiscard.className);
+        }
+      }
+
+      function hideDiscard(){
+        discard = document.getElementById('discard');
+        discard.className = "card hidden";
+      }
+
+      function writeToDiscard(cardId){
+        discard = document.getElementById('discard');
+        text = document.getElementById(cardId).innerHTML;
+        discard.innerHTML = text ;
+        empower(discard);
+      }
+
+
+
+    </script>
+
+
+
+</head>
+
+<body>
+
+    <div class="board" onload="refreshCards()">
+
+      <a class="title" style="">
+        <h1>cuffed</h1>
+      </a>
+
+
+      <a class="card" id="card1" style="top:2px; right:-6px; transform:rotate(1deg);" onclick="cardClick('card1')">
+      </a>
+      <a class="card" id="card2" style="top:3px; right:13px; transform:rotate(-4deg);" onclick="cardClick('card2')">
+      </a>
+      <a class="card" id="card3" style="top:-100px; right:-2px; transform:rotate(-1deg);" onclick="cardClick('card3')">
+      </a>
+      <a class="card" id="card4" style="top:-101px; right:13px; transform:rotate(1deg);" onclick="cardClick('card4')">
+      </a>
+      <a class="card" id="card5" style="top:-181px; right:-12px; transform:rotate(0deg);" onclick="cardClick('card5')">
+      </a>
+      <a class="card" id="card6" style="top:-180px; right:-1px; transform:rotate(2deg);" onclick="cardClick('card6')">
+      </a>
+
+      <a class="flipButton" onclick="flip()">
+        <h1>flip cards</h1>
+      </a>
+
+      <a id="discard" class="card hidden" onclick="hideDiscard()">
+      </a>
+
+      <a class="rules" style="top:-120px">
+        <h1 sytle="display:inline">On your turn:</h1>
+        <p style="display:inline">Tap to play a power card (dark red) or discard a low level task card. If you have neither, discard your lowest task card
+          and award that amount of points to your partner.</p>
+        <h1 sytle="display:inline">Game on:</h1>
+        <p style="display:inline">Flip your cards, and let your partner randomly choose a task card (light red). You must complete the task on the card,
+          and your partner is awarded the points.</p>
+      </a>
+
+    </div>
+
+    <div style="display:none">
+      <audio controls id="sound">
+       <source id="" src="sound.wav" type="audio/wav">
+      </audio>
+      <audio controls id="bigSound" display="none">
+       <source src="bigsound.wav" type="audio/wav">
+      </audio>
+    </div>
+
+    <!--<audio src="sound.wav" type="audio/wav" id="actualSound">
+    <audio src="bigSound.wav" type="audio/wav" id="actualBigSound">-->
+
+
+
+
+</body>
+
+</html>
