@@ -5,6 +5,12 @@
     version     = "1.2.3" >
 
 <!-- versionCode is optional and Android only -->
+    
+    
+    <config-file mode="merge" parent="/manifest" platform="android" xmlns:android="http://schemas.android.com/apk/res/android">
+        <application android:debuggable="true" />
+    </config-file>
+    
 
   <name>Cuffed</name>
 
